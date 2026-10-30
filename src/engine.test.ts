@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {compile,accepts,trace} from './engine';
+test('assignment examples',()=>{for(const [exp,yes,no] of [['aadaUaaadaUaaadaa',['mrf8t','lab2d','bea3ch'],['mk5sc','lbh1']],['(a)*dd(a)*',['23','a56','bas98edd'],['as98f7f']]] as const){const m=compile(exp);yes.forEach(s=>assert.equal(accepts(m,s),true,s));no.forEach(s=>assert.equal(accepts(m,s),false,s))}});
+test('epsilon acceptance and full-string rejection',()=>{assert(accepts(compile('(ad)*'),''));assert(accepts(compile('(ad)*'),'e1b2'));assert(!accepts(compile('(ad)*'),'e'));assert(!accepts(compile('ad'),'a1b'));assert(!accepts(compile('a'),'A'));assert(!accepts(compile('a'),'?'));assert(accepts(compile('a*d'),'7'))});
+test('restricted grammar rejects unsupported forms',()=>{for(const s of ['','aU','Ua','(aUdd)*','(a*)*','((ad)*)*','(ad)','a**'])assert.throws(()=>compile(s),s)});
+test('trace preserves epsilon closure and input position',()=>{const m=compile('(ad)*');const f=trace(m,'a1');assert.equal(f.length,3);assert(f[0].active.includes(m.start));assert(f[0].active.length>1);assert.equal(f[2].consumed,2);assert(f[2].active.some(q=>m.finals.includes(q)))});
+test('bounded exhaustive comparison with independent language oracle',()=>{const expressions=['a','d','ad','aUdd','(ad)*','a*d','(dd)*(aa)*','a*Ud*','(ad)*aUdd'];let strings=[''];for(let n=1;n<=5;n++){const prev=strings.filter(s=>s.length===n-1);strings.push(...prev.flatMap(s=>['a','7','?'].map(c=>s+c)))}for(const exp of expressions){const m=compile(exp);const oracle=new RegExp('^(?:'+exp.replaceAll('a','[a-z]').replaceAll('d','[0-9]').replaceAll('U','|')+')$');for(const s of strings)assert.equal(accepts(m,s),oracle.test(s),exp+' / '+s)}});
