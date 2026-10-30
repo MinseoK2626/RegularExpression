@@ -35,3 +35,7 @@ Original-source comments that say TODO are preserved. Reflection text describes 
 ## Validation
 
 `npm test` runs five named tests. `npm run build` runs TypeScript checks and a production build. Chromium smoke validation covers stepping, running, accepting/rejecting strings, reset, highlighted original source, PDF delivery, and a 390 px mobile viewport. This is development validation, not proof of deployed availability.
+
+## GitHub Pages
+
+In GitHub repository Settings → Pages, select **GitHub Actions** as the build source. The `Deploy portfolio to GitHub Pages` workflow builds and uploads `dist/` on pushes to `main`; it can also be run manually from Actions. Do not publish the source root directly: browsers cannot execute the TypeScript entry file. Relative Vite assets and original-material links support the `/RegularExpression/` project path and root-domain hosting.
