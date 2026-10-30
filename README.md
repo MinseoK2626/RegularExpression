@@ -1,10 +1,10 @@
-# The Computation Notebook
+# Pattern / Machine
 
-An interactive regular-expression / ε-NFA portfolio, built from the supplied Regular Expressions assignment and Java coursework. React, TypeScript, Vite; all computation runs locally in the browser.
+An interactive exploration of **Regular Expressions → Finite Automata → String Recognition**. React, TypeScript, Vite, and SVG; matching runs entirely in the browser.
 
-## Development
+## Develop
 
-Node.js 24 is verified. From `/workspace/RegularExpression`:
+Node.js 24 is verified. From the project root:
 
 ```sh
 npm ci
@@ -13,29 +13,23 @@ npm run build
 npm run dev -- --port 5173
 ```
 
-`npm run preview` serves the production build. Deploy `dist/` to a static host. No backend, credentials, or external font service is required.
+`npm run preview` serves the production build. Deploy `dist/`, never the source root. In GitHub Settings → Pages, choose GitHub Actions. `.github/workflows/deploy.yml` tests, builds, verifies the compiled entry, and deploys on pushes to `main`. Relative asset URLs support repository subpaths.
 
-## Structure
+## Architecture
 
-- `src/engine.ts`: pure machine construction and execution, separated from React.
-- `src/engine.test.ts`: assignment examples, grammar, epsilon behavior, traces, and 3,276 bounded differential comparisons against an independent regex oracle.
-- `src/main.tsx`: portfolio, project registry, NFA diagram, execution controls, source inspection.
-- `public/original/`: supplied Java, Makefile and assignment PDF, byte-for-byte preserved. Instructor scaffolding and supplied implementation are distinguished on the page.
+- `src/engine.ts`: pure recursive parser, explicit ε-NFA construction, fixed-point epsilon closure, active-set simulation, and trace frames.
+- `src/main.tsx`: project registry, SVG automaton, Run/Step/Reset, trace inspection, concise theory and implementation explanation. The source viewer imports the actual engine as text and highlights TypeScript.
+- `src/engine.test.ts`: five tests, including 3,276 bounded comparisons with an independent regular-expression oracle.
+- `reference/java/`: preserved Java implementation, including original attribution. This historical reference is outside the public assets and is not linked by the site. The browser implementation adapts its construction and simulation approach; these are standard formal-language concepts, not novel algorithms.
 
-Add future projects to the project registry and extract their components into separate modules as the collection grows. No placeholder projects are represented as completed work.
+No PDF is included or deployed. No backend, credentials, external font service, DFA conversion, or DFA minimization is required or implemented. Future projects can add isolated engines and components through the project registry; no unimplemented projects are presented.
 
-## Semantics and boundaries
+## Supported expression language
 
-`a` means ASCII lowercase, `d` ASCII digit. Union applies to complete alternatives. Parenthesized groups contain only a/d and must be starred; no nested groups. Matching consumes the whole string. The web UI restricts expressions to 48 characters and inputs to 64 for readable traces. Initial and post-symbol epsilon closures are shown as snapshots; epsilon edges are rendered but individual closure iterations are not animated.
+`a` means an ASCII lowercase letter, `d` a digit. `U` unions complete alternatives; adjacency concatenates; `*` repeats zero or more times. Groups contain only a/d, must be starred, and cannot nest. Matching covers the whole string, including empty strings. The UI limits expressions to 48 characters and input to 64 for readable diagrams. Unsupported syntax yields an inline error.
 
-The port follows the supplied Java `star`, `union`, `concatenate`, and recursive parser, including the new accepting start used by star. IDs restart per browser compilation rather than using the Java process-global counter. It validates unsupported grammar before compilation. Empty test strings are supported in the browser, whereas the original CLI's `Scanner.next()` cannot read empty tokens. The original Java was inspected but not executed: this environment has a Java runtime without `javac`. Browser-port validation does not establish correctness of the unmodified Java implementation.
-
-Original-source comments that say TODO are preserved. Reflection text describes implications of the supplied work, not unverified autobiographical claims.
+A frame is the initial epsilon closure or a post-character closure. Individual epsilon iterations are not animated. Input edges for the most recent character are highlighted; active states include all epsilon-reachable states. Diagram layout is a visualization layer, not part of recognition.
 
 ## Validation
 
-`npm test` runs five named tests. `npm run build` runs TypeScript checks and a production build. Chromium smoke validation covers stepping, running, accepting/rejecting strings, reset, highlighted original source, PDF delivery, and a 390 px mobile viewport. This is development validation, not proof of deployed availability.
-
-## GitHub Pages
-
-In GitHub repository Settings → Pages, select **GitHub Actions** as the build source. The `Deploy portfolio to GitHub Pages` workflow builds and uploads `dist/` on pushes to `main`; it can also be run manually from Actions. Do not publish the source root directly: browsers cannot execute the TypeScript entry file. Relative Vite assets and original-material links support the `/RegularExpression/` project path and root-domain hosting.
+`npm test` exercises the recognizer. `npm run build` checks TypeScript and builds the static app. Browser checks cover execution, reset, input errors, source inspection, and mobile overflow. Local build validation does not establish successful public deployment; check the GitHub Actions deployment result separately.

@@ -1,4 +1,5 @@
-// A browser port of the supplied Main.buildNFA and NFA operations.
+// Pure expression-to-NFA construction and set-based string recognition.
+// Adapted from the Java implementation retained in reference/java.
 export type Edge = {from:number; to:number; symbol:'a'|'d'|'ε'};
 export type Machine = {states:number[]; start:number; finals:number[]; edges:Edge[]};
 export type Frame = {active:number[]; consumed:number; phase:string; edges:number[]};
