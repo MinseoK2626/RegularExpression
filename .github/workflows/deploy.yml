@@ -25,6 +25,14 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm test
       - run: npm run build
+      - name: Verify compiled Pages entry
+        run: |
+          test -f dist/index.html
+          test -d dist/assets
+          if grep -q "src/main.tsx" dist/index.html; then
+            echo "Refusing to deploy uncompiled source HTML"
+            exit 1
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
