@@ -19,7 +19,7 @@ npm run dev -- --port 5173
 
 - `src/engine.ts`: pure recursive parser, explicit ε-NFA construction, fixed-point epsilon closure, active-set simulation, and trace frames.
 - `src/main.tsx`: project registry, SVG automaton, Run/Step/Reset, trace inspection, concise theory and implementation explanation. The source viewer imports the actual engine as text and highlights TypeScript.
-- `src/engine.test.ts`: five tests, including 3,276 bounded comparisons with an independent regular-expression oracle.
+- `src/engine.test.ts`: seven tests, including 3,276 bounded comparisons with an independent regular-expression oracle.
 - `reference/java/`: preserved Java implementation, including original attribution. This historical reference is outside the public assets and is not linked by the site. The browser implementation adapts its construction and simulation approach; these are standard formal-language concepts, not novel algorithms.
 
 No PDF is included or deployed. No backend, credentials, external font service, DFA conversion, or DFA minimization is required or implemented. Future projects can add isolated engines and components through the project registry; no unimplemented projects are presented.
@@ -33,3 +33,11 @@ A frame is the initial epsilon closure or a post-character closure. Individual e
 ## Validation
 
 `npm test` exercises the recognizer. `npm run build` checks TypeScript and builds the static app. Browser checks cover execution, reset, input errors, source inspection, and mobile overflow. Local build validation does not establish successful public deployment; check the GitHub Actions deployment result separately.
+
+## Explore implementation
+
+The Playground links six formal concepts to live machine data and excerpts extracted from `src/engine.ts?raw`. Named excerpt boundaries in that file identify actual executable lines; snippets are not duplicated. Every excerpt links to the full GitHub source. States and transitions are focusable buttons (Enter/Space); selection remains visible. Step selects character-transition details, while concept or graph selection can be changed independently during Run.
+
+`compile(expression, onConstruction?)` optionally emits deep-copied snapshots after symbol, concatenation, union, and star operations. Omitting the callback preserves normal compilation without snapshot allocation. Snapshots depict recursive submachines in execution order, not a fabricated cumulative animation. Construction mode shares the primary diagram; Run/Step returns to execution.
+
+Frames expose `before`, `moved`, `character`, and `symbol` alongside active states and edge indices. The panel uses these exact fields for before/after computation. Construction invariants and metadata are covered by two additional tests.
